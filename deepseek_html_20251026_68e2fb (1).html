@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار الكيمياء التفاعلي</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #8A2BE2, #4B0082);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            margin: 20px 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 2.2rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: normal;
+            font-size: 1.4rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+            color: #333;
+        }
+
+        button {
+            background-color: #FFD700;
+            color: #4B0082;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #FFEC8B;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .question-container {
+            margin-bottom: 25px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+        }
+
+        .question-number {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+            color: #FFD700;
+        }
+
+        .question-text {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .option.selected {
+            background-color: rgba(255, 215, 0, 0.3);
+            border: 2px solid #FFD700;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .navigation button {
+            width: 48%;
+        }
+
+        .feedback {
+            text-align: center;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .correct-feedback {
+            background-color: rgba(0, 200, 0, 0.3);
+            color: #90EE90;
+        }
+
+        .incorrect-feedback {
+            background-color: rgba(255, 0, 0, 0.3);
+            color: #FFB6C1;
+        }
+
+        .results-container {
+            text-align: center;
+        }
+
+        .score {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #FFD700;
+            margin: 20px 0;
+        }
+
+        .answers-summary {
+            margin-top: 30px;
+            text-align: right;
+        }
+
+        .answer-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .correct-answer {
+            color: #90EE90;
+            font-weight: bold;
+        }
+
+        .user-answer.correct {
+            color: #90EE90;
+        }
+
+        .user-answer.incorrect {
+            color: #FFB6C1;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: #FFD700;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .student-info {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="welcome-screen">
+        <h1>اختبار الكيمياء التفاعلي</h1>
+        <h2>اختبر معلوماتك في الكيمياء مع ردود فعل فورية</h2>
+        
+        <div class="form-group">
+            <label for="student-name">اسم الطالب:</label>
+            <input type="text" id="student-name" placeholder="أدخل اسمك هنا">
+        </div>
+        
+        <div class="form-group">
+            <label for="student-section">الشعبة:</label>
+            <select id="student-section">
+                <option value="">اختر الشعبة</option>
+                <option value="1">الشعبة 1</option>
+                <option value="2">الشعبة 2</option>
+                <option value="3">الشعبة 3</option>
+                <option value="4">الشعبة 4</option>
+                <option value="5">الشعبة 5</option>
+                <option value="6">الشعبة 6</option>
+                <option value="7">الشعبة 7</option>
+            </select>
+        </div>
+        
+        <button id="start-btn">بدء الاختبار</button>
+    </div>
+
+    <div class="container hidden" id="quiz-screen">
+        <div class="student-info">
+            <span id="current-student-name"></span> - الشعبة <span id="current-student-section"></span>
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress" id="progress-bar"></div>
+        </div>
+        
+        <div id="question-container"></div>
+        
+        <div class="feedback hidden" id="feedback"></div>
+        
+        <div class="navigation">
+            <button id="prev-btn">السؤال السابق</button>
+            <button id="next-btn">السؤال التالي</button>
+        </div>
+        
+        <button id="submit-btn" class="hidden">إنهاء الاختبار</button>
+    </div>
+
+    <div class="container hidden" id="results-screen">
+        <h1>نتيجة الاختبار</h1>
+        
+        <div class="student-info">
+            <span id="result-student-name"></span> - الشعبة <span id="result-student-section"></span>
+        </div>
+        
+        <div class="score" id="score"></div>
+        
+        <div class="results-container">
+            <p id="result-message"></p>
+            
+            <div class="answers-summary" id="answers-summary"></div>
+            
+            <button id="restart-btn">إعادة الاختبار</button>
+        </div>
+    </div>
+
+    <audio id="correct-sound" src="https://assets.mixkit.co/active_storage/sfx/286/286-preview.mp3" preload="auto"></audio>
+    <audio id="incorrect-sound" src="https://assets.mixkit.co/active_storage/sfx/249/249-preview.mp3" preload="auto"></audio>
+
+    <script>
+        // بيانات الأسئلة
+        const questions = [
+            {
+                question: "ما هي الآفة الرئيسية التي تتسبب بها الأشعة فوق البنفسجية (UVB) للبشر؟",
+                options: [
+                    "تحسين كثافة العظام.",
+                    "التسبب بسرطان الجلد.",
+                    "المساعدة على إنتاج فيتامين د.",
+                    "تحسين النظر الليلي."
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "أين تتركز طبقة الأوزون الرئيسية في الغلاف الجوي؟",
+                options: [
+                    "التروبوسفير.",
+                    "الميزوسفير.",
+                    "الثيرموسفير.",
+                    "الستراتوسفير."
+                ],
+                correctAnswer: 3
+            },
+            {
+                question: "ما هي الصيغة الكيميائية الصحيحة لجزيء الأوزون؟",
+                options: [
+                    "O₂",
+                    "O₃",
+                    "O₄",
+                    "CO₂"
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "ما الوحدة المستخدمة لقياس كمية الأوزون في الغلاف الجوي؟",
+                options: [
+                    "النيوتن.",
+                    "دوبسون.",
+                    "الباسكال.",
+                    "الجول."
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "ما هي المركبات المسؤولة بشكل رئيسي عن استنزاف طبقة الأوزون؟",
+                options: [
+                    "ثاني أكسيد الكربون (CO₂).",
+                    "مركبات الكلوروفلوروكربون (CFCs).",
+                    "الأكسجين (O₂).",
+                    "الميثان (CH₄)."
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "ما الدور الرئيسي الذي تلعبه طبقة الأوزون؟",
+                options: [
+                    "تنظيم درجة حرارة الأرض.",
+                    "امتصاص الأشعة فوق البنفسجية الضارة.",
+                    "توفير الأكسجين للتنفس.",
+                    "تشكيل السحب."
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "ما الهدف الرئيسي من بروتوكول مونتريال؟",
+                options: [
+                    "مكافحة الفقر.",
+                    "الحد من انبعاثات ثاني أكسيد الكربون.",
+                    "حماية طبقة الأوزون من المواد المستنفدة لها.",
+                    "تنظيم التجارة الدولية."
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "لماذا يكون ثقب الأوزون أكثر وضوحًا فوق القارة القطبية الجنوبية؟",
+                options: [
+                    "لأنها الأقرب إلى الشمس.",
+                    "بسبب الظروف الجوية الخاصة التي تساعد على تجمع المركبات المستنفدة للأوزون.",
+                    "لأنها تنتج كميات كبيرة من مركبات الكلوروفلوروكربون.",
+                    "بسبب قلة السكان."
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "ما العامل الرئيسي الذي يؤدي إلى تكوين كميات أكبر من الأوزون فوق خط الاستواء؟",
+                options: [
+                    "انخفاض درجة الحرارة.",
+                    "قلة التلوث.",
+                    "شدة وسقوط أشعة الشمس عمودياً طوال العام.",
+                    "وجود المحيطات."
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "أي من هذه الأجهزة يستخدم لقياس الأوزون من الأقمار الصناعية؟",
+                options: [
+                    "مقياس الحرارة.",
+                    "مقياس طيف الأوزون (مثل TOMS).",
+                    "الميزان.",
+                    "المسطرة."
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "ما هو التركيز الرئيسي لعلم الكيمياء العضوية؟",
+                options: [
+                    "دراسة العناصر المعدنية.",
+                    "دراسة المركبات التي تحتوي على الكربون.",
+                    "دراسة التفاعلات في الكائنات الحية فقط.",
+                    "دراسة خواص الماء."
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "أي من العبارات التالية تميز الكتلة عن الوزن؟",
+                options: [
+                    "الكتلة تتغير بتغير الجاذبية، بينما الوزن ثابت.",
+                    "الكتلة قوة، بينما الوزن كمية المادة.",
+                    "الكتلة كمية المادة وثابتة، بينما الوزن قوة ويتغير بالجاذبية.",
+                    "الكتلة والوزن مترادفان."
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "لماذا يهتم الكيميائي بدراسة المادة على المستوى المجهري؟",
+                options: [
+                    "لأنه أرخص.",
+                    "لأن الخصائص المرئية للمادة ناتجة عن سلوكها المجهري.",
+                    "لأنه لا يمكن رؤية المادة بالعين المجردة.",
+                    "لأنه أسهل."
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "أي فرع من فروع الكيمياء يهتم بدراسة العمليات الكيميائية داخل جسم الكائن الحي؟",
+                options: [
+                    "الكيمياء الفيزيائية.",
+                    "الكيمياء التحليلية.",
+                    "الكيمياء الحيوية.",
+                    "الكيمياء غير العضوية."
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "أي من الخيارات التالية يمثل بيانات كمية؟",
+                options: [
+                    "لون العينة أزرق.",
+                    "العينة لها رائحة كريهة.",
+                    "درجة غليان السائل 100 درجة مئوية.",
+                    "المادة صلبة."
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "ما هو التعريف الأنسب للطريقة العلمية؟",
+                options: [
+                    "مجموعة من المعتقدات.",
+                    "عملية منهجية يستخدمها العلماء للتحقق من الظواهر الطبيعية.",
+                    "طريقة لكتابة التقارير.",
+                    "نظرية غير قابلة للدحض."
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "ما الفرق الرئيسي بين الفرضية والنظرية؟",
+                options: [
+                    "الفرضية مثبتة بأدلة كثيرة، بينما النظرية هي مجرد تخمين.",
+                    "النظرية هي تفسير أولي، بينما الفرضية مثبتة.",
+                    "الفرضية تفسير قابل للاختبار، بينما النظرية تفسير شامل مدعوم بأدلة.",
+                    "لا فرق بينهما."
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "في تجربة لاختبار تأثير درجة الحرارة على ذوبان السكر، ما هو المتغير المستقل؟",
+                options: [
+                    "كمية الماء المستخدمة.",
+                    "نوع السكر.",
+                    "درجة حرارة الماء.",
+                    "الوقت الذي يستغرقه الذوبان."
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "ما هو المتغير التابع في التجربة السابقة؟",
+                options: [
+                    "كمية الماء المستخدمة.",
+                    "نوع السكر.",
+                    "درجة حرارة الماء.",
+                    "الوقت الذي يستغرقه الذوبان."
+                ],
+                correctAnswer: 3
+            },
+            {
+                question: "ما الهدف الأساسي من تحليل نتائج التجربة؟",
+                options: [
+                    "لإثبات أن الفرضية خاطئة دائمًا.",
+                    "لتأكيد الفرضية أو نفيها واستخلاص استنتاجات.",
+                    "لتجاهل البيانات غير المتوقعة.",
+                    "لإنهاء التقرير بسرعة."
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "أي نوع من البحوث يهدف مباشرة إلى حل مشكلة عملية؟",
+                options: [
+                    "البحث النظري.",
+                    "البحث التطبيقي.",
+                    "البحث التاريخي.",
+                    "البحث الفلسفي."
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "أي من الخيارات التالية يمثل قانونًا علميًا؟",
+                options: [
+                    "نظرية التطور.",
+                    "قانون نيوتن للجاذبية (يصف الجاذبية دون تفسيرها).",
+                    "فرضية الوجود.",
+                    "نظرية الانفجار العظيم."
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "ما هو الإجراء الأكثر أهمية للسلامة في المختبر؟",
+                options: [
+                    "ارتداء المعدات الواقية مثل النظارات والمعطف.",
+                    "تناول الطعام والشراب.",
+                    "الجري لإنجاز التجربة بسرعة.",
+                    "العمل بمفردك دائمًا."
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "أي من هذه الاكتشافات كان غير مقصود (بالصدفة)؟",
+                options: [
+                    "اكتشاف البنسلين من قبل ألكسندر فلمنج.",
+                    "وضع جدول دوري من قبل مندليف.",
+                    "اكتشاف تركيب الحمض النووي من قبل واتسون وكريك.",
+                    "جميع ما سبق."
+                ],
+                correctAnswer: 0
+            },
+            {
+                question: "أي من هذه ليس من فوائد علم الكيمياء؟",
+                options: [
+                    "تطوير أدوية جديدة.",
+                    "تلويث البيئة بشكل متعمد.",
+                    "إنتاج مواد بناء جديدة.",
+                    "تحسين تقنيات تنقية المياه."
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "عند سكب مادة كيميائية على جلدك، ما أول ما يجب عليك فعله؟",
+                options: [
+                    "الانتظار لترى ما إذا كان هناك ألم.",
+                    "غسل المنطقة بماء جاري بكمية كبيرة.",
+                    "تجفيفها بمنشور.",
+                    "وضع مرهم دون استشارة."
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "ما هو الغرض من غطاء الدخان (الشفاط) في المختبر؟",
+                options: [
+                    "لإضاءة منطقة العمل.",
+                    "لتخزين المواد الكيميائية.",
+                    "لحماية المستخدم من استنشاق الأبخرة الخطرة.",
+                    "لتبريد الأدوات الساخنة."
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "أي من هذه المواد الكيميائية يعتبر قابلاً للاشتعال في العادة؟",
+                options: [
+                    "الماء.",
+                    "الكحول.",
+                    "ملح الطعام.",
+                    "الرمل."
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "اكتشاف مادة السكارين (المحلي الصناعي) هو مثال على:",
+                options: [
+                    "بحث نظري دقيق.",
+                    "اكتشاف غير مقصود.",
+                    "تطبيق للكيمياء الحيوية فقط.",
+                    "تفاعل مخطّط له بدقة."
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "أي من هذه المجالات لا يعتبر فرعًا رئيسيًا من فروع الكيمياء؟",
+                options: [
+                    "الكيمياء العضوية.",
+                    "الكيمياء التحليلية.",
+                    "كيمياء السحر.",
+                    "الكيمياء الفيزيائية."
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "أي من هذه الخواص تعتبر خاصية كيميائية؟",
+                options: [
+                    "الكتلة.",
+                    "اللون.",
+                    "القابلية للاشتعال.",
+                    "الكثافة."
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "عندما يتحول الماء من الحالة السائلة إلى الصلبة، يسمى هذا التغير:",
+                options: [
+                    "تغير كيميائي.",
+                    "انصهار.",
+                    "تكثف.",
+                    "تجمد."
+                ],
+                correctAnswer: 3
+            },
+            {
+                question: "المادة النقية التي لا يمكن تحليلها إلى مواد أبسط بالوسائل الكيميائية العادية هي:",
+                options: [
+                    "المركب.",
+                    "الخليط.",
+                    "العنصر.",
+                    "المحلول."
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "أي من هذه يمثل خليطًا متجانسًا؟",
+                options: [
+                    "السلطة.",
+                    "الماء المالح.",
+                    "الرمل والحصى.",
+                    "الرغوة."
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "ما الذي تشير إليه 'الكتلة الذرية' للعنصر؟",
+                options: [
+                    "عدد الإلكترونات.",
+                    "عدد البروتونات.",
+                    "متوسط كتلة ذرات العنصر.",
+                    "عدد النيوترونات."
+                ],
+                correctAnswer: 2
+            },
+            {
+                question: "كم إلكترونًا يوجد في الغلاف الخارجي للعناصر المستقرة (الغازات النبيلة) عادة؟",
+                options: [
+                    "2 إلكترونات.",
+                    "8 إلكترونات.",
+                    "18 إلكترونًا.",
+                    "الرقم يعتمد على العنصر."
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "ما نوع الرابطة التي تتشارك فيها الذرات بالإلكترونات؟",
+                options: [
+                    "الرابطة الأيونية.",
+                    "الرابطة التساهمية.",
+                    "الرابطة الهيدروجينية.",
+                    "الرابطة المعدنية."
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "في المعادلة الكيميائية، ماذا يجب أن يكون متساويًا على طرفي السهم؟",
+                options: [
+                    "عدد الجزيئات فقط.",
+                    "عدد الذرات لكل عنصر.",
+                    "حجم المواد المتفاعلة.",
+                    "كتلة المواد الناتجة فقط."
+                ],
+                correctAnswer: 1
+            },
+            {
+                question: "أي من هذه العوامل لا يؤثر عادة في سرعة التفاعل الكيميائي؟",
+                options: [
+                    "درجة الحرارة.",
+                    "تركيز المواد المتفاعلة.",
+                    "وجود عامل حفاز.",
+                    "لون المواد المتفاعلة."
+                ],
+                correctAnswer: 3
+            },
+            {
+                question: "عند إذابة حمض في الماء، يجب دائمًا:",
+                options: [
+                    "إضافة الماء إلى الحمض.",
+                    "إضافة الحمض إلى الماء.",
+                    "خلطهما في نفس الوقت.",
+                    "تسخين الماء أولاً."
+                ],
+                correctAnswer: 1
+            }
+        ];
+
+        // عناصر DOM
+        const welcomeScreen = document.getElementById('welcome-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultsScreen = document.getElementById('results-screen');
+        const startBtn = document.getElementById('start-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const questionContainer = document.getElementById('question-container');
+        const feedback = document.getElementById('feedback');
+        const progressBar = document.getElementById('progress-bar');
+        const studentNameInput = document.getElementById('student-name');
+        const studentSectionSelect = document.getElementById('student-section');
+        const currentStudentName = document.getElementById('current-student-name');
+        const currentStudentSection = document.getElementById('current-student-section');
+        const resultStudentName = document.getElementById('result-student-name');
+        const resultStudentSection = document.getElementById('result-student-section');
+        const scoreElement = document.getElementById('score');
+        const resultMessage = document.getElementById('result-message');
+        const answersSummary = document.getElementById('answers-summary');
+        const correctSound = document.getElementById('correct-sound');
+        const incorrectSound = document.getElementById('incorrect-sound');
+
+        // متغيرات التطبيق
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+        let quizStarted = false;
+
+        // تهيئة التطبيق
+        function initApp() {
+            startBtn.addEventListener('click', startQuiz);
+            prevBtn.addEventListener('click', showPreviousQuestion);
+            nextBtn.addEventListener('click', showNextQuestion);
+            submitBtn.addEventListener('click', showResults);
+            restartBtn.addEventListener('click', restartQuiz);
+        }
+
+        // بدء الاختبار
+        function startQuiz() {
+            const studentName = studentNameInput.value.trim();
+            const studentSection = studentSectionSelect.value;
+            
+            if (!studentName || !studentSection) {
+                alert('يرجى إدخال اسم الطالب واختيار الشعبة');
+                return;
+            }
+            
+            currentStudentName.textContent = studentName;
+            currentStudentSection.textContent = studentSection;
+            resultStudentName.textContent = studentName;
+            resultStudentSection.textContent = studentSection;
+            
+            welcomeScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            
+            quizStarted = true;
+            showQuestion();
+        }
+
+        // عرض السؤال الحالي
+        function showQuestion() {
+            const question = questions[currentQuestionIndex];
+            
+            let questionHTML = `
+                <div class="question-container">
+                    <div class="question-number">السؤال ${currentQuestionIndex + 1} من ${questions.length}</div>
+                    <div class="question-text">${question.question}</div>
+                    <div class="options-container">
+            `;
+            
+            question.options.forEach((option, index) => {
+                const isSelected = userAnswers[currentQuestionIndex] === index;
+                questionHTML += `
+                    <div class="option ${isSelected ? 'selected' : ''}" data-index="${index}">
+                        ${option}
+                    </div>
+                `;
+            });
+            
+            questionHTML += `</div></div>`;
+            
+            questionContainer.innerHTML = questionHTML;
+            
+            // إضافة مستمعي الأحداث للخيارات
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', selectOption);
+            });
+            
+            // تحديث شريط التقدم
+            updateProgressBar();
+            
+            // تحديث حالة الأزرار
+            updateNavigationButtons();
+            
+            // إخفاء التغذية الراجعة
+            feedback.classList.add('hidden');
+        }
+
+        // اختيار إجابة
+        function selectOption(e) {
+            const selectedOptionIndex = parseInt(e.currentTarget.getAttribute('data-index'));
+            userAnswers[currentQuestionIndex] = selectedOptionIndex;
+            
+            // تحديث المظهر للخيار المحدد
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            e.currentTarget.classList.add('selected');
+            
+            // عرض التغذية الراجعة
+            showFeedback(selectedOptionIndex === questions[currentQuestionIndex].correctAnswer);
+            
+            // تحديث حالة الأزرار
+            updateNavigationButtons();
+        }
+
+        // عرض التغذية الراجعة
+        function showFeedback(isCorrect) {
+            if (isCorrect) {
+                feedback.textContent = 'إجابة صحيحة! يمكنك التقدم';
+                feedback.className = 'feedback correct-feedback';
+                correctSound.play();
+            } else {
+                feedback.textContent = 'إجابة خاطئة! حاول مجددا';
+                feedback.className = 'feedback incorrect-feedback';
+                incorrectSound.play();
+            }
+            
+            feedback.classList.remove('hidden');
+        }
+
+        // تحديث شريط التقدم
+        function updateProgressBar() {
+            const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        // تحديث حالة أزرار التنقل
+        function updateNavigationButtons() {
+            prevBtn.disabled = currentQuestionIndex === 0;
+            nextBtn.disabled = userAnswers[currentQuestionIndex] === null;
+            
+            // إظهار زر الإنهاء إذا كانت هذه آخر سؤال
+            if (currentQuestionIndex === questions.length - 1) {
+                nextBtn.classList.add('hidden');
+                submitBtn.classList.remove('hidden');
+            } else {
+                nextBtn.classList.remove('hidden');
+                submitBtn.classList.add('hidden');
+            }
+        }
+
+        // الانتقال إلى السؤال السابق
+        function showPreviousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                showQuestion();
+            }
+        }
+
+        // الانتقال إلى السؤال التالي
+        function showNextQuestion() {
+            if (currentQuestionIndex < questions.length - 1 && userAnswers[currentQuestionIndex] !== null) {
+                currentQuestionIndex++;
+                showQuestion();
+            }
+        }
+
+        // عرض النتائج
+        function showResults() {
+            // حساب النتيجة
+            let correctAnswers = 0;
+            userAnswers.forEach((answer, index) => {
+                if (answer === questions[index].correctAnswer) {
+                    correctAnswers++;
+                }
+            });
+            
+            const score = (correctAnswers / questions.length) * 100;
+            
+            // عرض النتيجة
+            scoreElement.textContent = `${score.toFixed(1)}%`;
+            
+            // عرض رسالة النتيجة
+            if (score >= 90) {
+                resultMessage.textContent = 'ممتاز! أداء رائع';
+            } else if (score >= 80) {
+                resultMessage.textContent = 'جيد جداً! أداء متميز';
+            } else if (score >= 70) {
+                resultMessage.textContent = 'جيد! يمكنك التحسن أكثر';
+            } else if (score >= 60) {
+                resultMessage.textContent = 'مقبول! تحتاج للمزيد من الدراسة';
+            } else {
+                resultMessage.textContent = 'ضعيف! يرجى مراجعة المواد الدراسية';
+            }
+            
+            // عرض ملخص الإجابات
+            let summaryHTML = '<h3>ملخص الإجابات:</h3>';
+            questions.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                const isCorrect = userAnswer === question.correctAnswer;
+                
+                summaryHTML += `
+                    <div class="answer-item">
+                        <div class="question-text">${index + 1}. ${question.question}</div>
+                        <div class="correct-answer">الإجابة الصحيحة: ${question.options[question.correctAnswer]}</div>
+                        <div class="user-answer ${isCorrect ? 'correct' : 'incorrect'}">إجابتك: ${userAnswer !== null ? question.options[userAnswer] : 'لم تجب'}</div>
+                    </div>
+                `;
+            });
+            
+            answersSummary.innerHTML = summaryHTML;
+            
+            // الانتقال إلى شاشة النتائج
+            quizScreen.classList.add('hidden');
+            resultsScreen.classList.remove('hidden');
+        }
+
+        // إعادة بدء الاختبار
+        function restartQuiz() {
+            // إعادة تعيين المتغيرات
+            currentQuestionIndex = 0;
+            userAnswers = new Array(questions.length).fill(null);
+            
+            // العودة إلى شاشة البداية
+            resultsScreen.classList.add('hidden');
+            welcomeScreen.classList.remove('hidden');
+            
+            // مسح بيانات المستخدم
+            studentNameInput.value = '';
+            studentSectionSelect.value = '';
+        }
+
+        // بدء التطبيق
+        initApp();
+    </script>
+</body>
+</html>
